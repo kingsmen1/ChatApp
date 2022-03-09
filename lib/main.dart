@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Chat',
           theme: ThemeData(
             primarySwatch: Colors.blue,
-          backgroundColor: Colors.pink,
+          primaryColor: Colors.pink,
               accentColor:Colors.deepPurple,
             accentColorBrightness: Brightness.dark,
             elevatedButtonTheme: ElevatedButtonThemeData(
