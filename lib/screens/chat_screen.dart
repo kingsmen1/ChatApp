@@ -4,24 +4,26 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        padding: const EdgeInsets.all(10),
-        itemBuilder: (ctx, i) => const Text('this works!'),
-        itemCount: 10,
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('chats/1toXWvHUAnaj3V2bEOYX/messages')
-              .snapshots()
-              .listen((data) { 
-                data.docs.forEach((document) {
-                  print(document['text']);
-                });
-          });
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: StreamBuilder(stream: FirebaseFirestore.instance
+            .collection('chats/1toXWvHUAnaj3V2bEOYX/messages')
+            .snapshots(),
+          builder: (ctx, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+            if (streamSnapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator(),);
+            }
+            final document = streamSnapshot.data.docs;
+            return ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemBuilder: (ctx, i) => Text(document[i]['text']),
+              itemCount: document.length,
+            );
+          },),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {},
+        ),
       ),
     );
   }
