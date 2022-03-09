@@ -11,7 +11,7 @@ class ChatScreen extends StatelessWidget {
             .snapshots(),
           builder: (ctx, AsyncSnapshot<QuerySnapshot> streamSnapshot) {
             if (streamSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator(),);
+              return const  Center(child: CircularProgressIndicator(),);
             }
             final document = streamSnapshot.data.docs;
             return ListView.builder(
