@@ -6,7 +6,7 @@ class AuthForm extends StatefulWidget {
   AuthForm(this.submitFn);
 
   final void Function(
-      String email, String username, String password, bool isLogin) submitFn;
+      String email, String username, String password, bool isLogin , BuildContext ctx ) submitFn;
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -26,7 +26,7 @@ class _AuthFormState extends State<AuthForm> {
     if (_isValid) {
       //this line triggers the onSaved on every TextFormField
       _formKey.currentState.save();
-      widget.submitFn(_userEmail, _userName, _userPassword, _isLogin);
+      widget.submitFn(_userEmail.trim(), _userName.trim(), _userPassword.trim(), _isLogin , context);
     }
   }
 
@@ -46,6 +46,7 @@ class _AuthFormState extends State<AuthForm> {
     EmailValidator(errorText: 'Email is no Valid!')
   ]);
 
+//userName validator
   final UserNameValidator = MultiValidator([
     RequiredValidator(errorText: '*Required*'),
     MinLengthValidator(4,
@@ -56,9 +57,10 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(20),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
+          padding:const  EdgeInsets.all(16),
           child: Form(
               key: _formKey,
               child: Column(
@@ -84,7 +86,7 @@ class _AuthFormState extends State<AuthForm> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
                         hintText: 'Email address',
-                        prefixIcon: Icon(Icons.email)),
+                        suffixIcon: Icon(Icons.email)),
                     keyboardType: TextInputType.emailAddress,
                     onSaved: (value) {
                       _userEmail = value;
@@ -113,7 +115,7 @@ class _AuthFormState extends State<AuthForm> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12)),
                           labelText: 'Username',
-                          prefixIcon: Icon(Icons.account_circle)),
+                          suffixIcon: Icon(Icons.account_circle)),
                       onSaved: (value) {
                         _userName = value;
                       },
@@ -135,10 +137,13 @@ class _AuthFormState extends State<AuthForm> {
                     //   return null;
                     /},*/
                     decoration: InputDecoration(
+                      hintText: 'Password',
+                     // floatingLabelAlignment: FloatingLabelAlignment.start,
+                        //floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.password)),
+                        //labelText: 'Password',
+                        suffixIcon: const Icon(Icons.password)),
                     obscureText: true,
                     onSaved: (value) {
                       _userPassword = value;
