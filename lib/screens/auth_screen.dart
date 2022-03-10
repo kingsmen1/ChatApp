@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -11,32 +12,60 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
 
-  void _submitAuthForm(
-      String email, String username, String password, bool isLogin , BuildContext ctx ) async {
+  bool _isLoading   = false;
 
+  void _submitAuthForm(String email, String username, String password,
+      bool isLogin, BuildContext ctx) async {
     UserCredential authResult;
-    try{if (isLogin) {
-      authResult = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
-    } else {
-      authResult = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-    }}on FirebaseAuthException  catch(err){
-      var message  = 'An Error Occured . Please check your Credentials';
-      if(err.message != null){
-        message  = err.message;
+    try {
+      setState(() {
+        _isLoading  = true;
+      });
+      if (isLogin) {
+        authResult = await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+      } else {
+        authResult = await _auth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        await  FirebaseFirestore.instance
+            .collection('Users')
+            .doc(authResult.user.uid)
+            .set({'UserName': username, 'email': email});
       }
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text(message) , backgroundColor: Theme.of(context).errorColor,));
-    } catch (err){
+    } on FirebaseAuthException catch (err) {
+      var message = 'An Error Occured . Please check your Credentials';
+      if (err.message != null) {
+        message = err.message;
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text(message),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } catch (err) {
+      setState(() {
+        _isLoading  = false;
+      });
       print(err);
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: AuthForm(_submitAuthForm));
+        body: AuthForm(_submitAuthForm  ,_isLoading));
   }
 }

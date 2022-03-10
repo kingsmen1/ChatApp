@@ -1,9 +1,12 @@
+import 'package:chatapp/helpers/validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 class AuthForm extends StatefulWidget {
-  AuthForm(this.submitFn);
+  AuthForm(this.submitFn  , this._isLoading);
+
+  final bool _isLoading ;
 
   final void Function(
       String email, String username, String password, bool isLogin , BuildContext ctx ) submitFn;
@@ -30,28 +33,7 @@ class _AuthFormState extends State<AuthForm> {
     }
   }
 
-  //form password validator
-  final passwordValidator = MultiValidator([
-    RequiredValidator(errorText: 'password is required'),
-    MinLengthValidator(8, errorText: 'password must be at least 8 digits long'),
-    MaxLengthValidator(12,
-        errorText: 'password should not be more than  8 digits long'),
-    PatternValidator(r'(?=.*?[#?!@$%^&*-_])',
-        errorText: 'passwords must have at least one special character')
-  ]);
 
-  //form email validator
-  final emailValidator = MultiValidator([
-    RequiredValidator(errorText: '*Required*'),
-    EmailValidator(errorText: 'Email is no Valid!')
-  ]);
-
-//userName validator
-  final UserNameValidator = MultiValidator([
-    RequiredValidator(errorText: '*Required*'),
-    MinLengthValidator(4,
-        errorText: 'Username should be atlest 4 characters long')
-  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +52,7 @@ class _AuthFormState extends State<AuthForm> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     autofillHints: [AutofillHints.email],
                     key: ValueKey('Email'),
-                    validator: emailValidator,
+                    validator: Validators.emailValidator,
                     /* (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Please enter your email address';
@@ -85,7 +67,7 @@ class _AuthFormState extends State<AuthForm> {
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        hintText: 'Email address',
+                        labelText: 'Email address',
                         suffixIcon: Icon(Icons.email)),
                     keyboardType: TextInputType.emailAddress,
                     onSaved: (value) {
@@ -100,7 +82,7 @@ class _AuthFormState extends State<AuthForm> {
                     TextFormField(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       key: ValueKey('UserName'),
-                      validator: UserNameValidator,
+                      validator: Validators.UserNameValidator,
                       /*(value) {
                         MinLengthValidator(4, errorText: 'userName should be atleast 4 Character');
                         if (value == null || value.trim().isEmpty) {
@@ -126,7 +108,7 @@ class _AuthFormState extends State<AuthForm> {
                   TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: ValueKey('password'),
-                    validator: passwordValidator,
+                    validator: Validators.passwordValidator,
                     /*(value) {
                     //   if (value == null || value.trim().isEmpty) {
                     //     return 'Enter Password';
@@ -137,12 +119,12 @@ class _AuthFormState extends State<AuthForm> {
                     //   return null;
                     /},*/
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      //hintText: 'Password',
                      // floatingLabelAlignment: FloatingLabelAlignment.start,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
-                        //labelText: 'Password',
+                        labelText: 'Password',
                         suffixIcon: const Icon(Icons.password)),
                     obscureText: true,
                     onSaved: (value) {
@@ -153,9 +135,12 @@ class _AuthFormState extends State<AuthForm> {
                   const SizedBox(
                     height: 12,
                   ),
+                  if(widget._isLoading)CircularProgressIndicator(),
+                  if(!widget._isLoading)
                   ElevatedButton(
                       onPressed: _trySubmit,
                       child: Text(_isLogin ? 'Login' : 'SignUp')),
+                  if(!widget._isLoading)
                   TextButton(
                     child: Text(_isLogin
                         ? 'Create New Account'
