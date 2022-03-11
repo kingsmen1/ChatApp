@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../widgets/chats/messages.dart';
+import '../widgets/chats/new_message.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -49,17 +50,19 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         body:  Container(
           child: Column(
-            children: [Expanded(child: Messages())],
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Expanded(child: Messages()) ,
+            NewMessage()],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
+        /*floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
             FirebaseFirestore.instance
                 .collection('chats/1toXWvHUAnaj3V2bEOYX/messages')
                 .add({'text': 'This message was added by Button'});
           },
-        ),
+        ),*/
       ),
     );
   }

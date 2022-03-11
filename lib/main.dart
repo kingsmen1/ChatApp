@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() {
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -22,8 +22,8 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Chat',
           theme: ThemeData(
             primarySwatch: Colors.blue,
-          primaryColor: Colors.pink,
-              accentColor:Colors.deepPurple,
+            primaryColor: Colors.pink,
+            accentColor: Colors.deepPurple,
             accentColorBrightness: Brightness.dark,
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
@@ -38,19 +38,19 @@ class MyApp extends StatelessWidget {
               style: TextButton.styleFrom(
                 primary: Colors.pink,
               ),
-            ),
+            ),buttonColor: Colors.blue
           ),
-
-          home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges() , builder: (BuildContext context, snapShotData) {
-            if(snapShotData.hasData){
-              return ChatScreen();
-            }
-            return AuthScreen();
-          },),
+          home: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (BuildContext context, snapShotData) {
+              if (snapShotData.hasData) {
+                return ChatScreen();
+              }
+              return AuthScreen();
+            },
+          ),
         );
       },
     );
   }
 }
-
-
