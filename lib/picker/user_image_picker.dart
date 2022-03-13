@@ -1,11 +1,16 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class UserImagePicker extends StatefulWidget {
+  UserImagePicker(this.imagePickFn);
+
+
+  final void Function  (File pickedImage ) imagePickFn;
   @override
   _UserImagePickerState createState() => _UserImagePickerState();
 }
@@ -20,6 +25,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
     setState(() {
       pickedImage = userImage;
     });
+    widget.imagePickFn(pickedImage);
   }
 
   @override

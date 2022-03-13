@@ -11,7 +11,7 @@ class AuthForm extends StatefulWidget {
   final bool _isLoading;
 
   final void Function(String email, String username, String password,
-      bool isLogin, BuildContext ctx) submitFn;
+      bool isLogin, File userImage, BuildContext ctx) submitFn;
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -24,6 +24,8 @@ class _AuthFormState extends State<AuthForm> {
 
   bool passIsHidden = true;
 
+   File _userImage;
+
   var _isLogin = true;
   String _userEmail = '';
   String _userName = '';
@@ -31,14 +33,26 @@ class _AuthFormState extends State<AuthForm> {
 
   final _formKey = GlobalKey<FormState>();
 
+  void userImage(File receavedUserImage){
+    _userImage =  receavedUserImage;
+  }
+
   void _trySubmit() {
     final _isValid = _formKey.currentState.validate();
     FocusScope.of(context).unfocus();
+
+    if (_userImage == null && !_isLogin) {
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Please upload the image'),
+        backgroundColor: Theme.of(context).errorColor,
+      ));
+      return;
+    }
     if (_isValid) {
       //this line triggers the onSaved on every TextFormField
       _formKey.currentState.save();
       widget.submitFn(_userEmail.trim(), _userName.trim(), _userPassword.trim(),
-          _isLogin, context);
+          _isLogin, _userImage, context);
     }
   }
 
@@ -55,7 +69,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!_isLogin) UserImagePicker(),
+                  if (!_isLogin) UserImagePicker(userImage),
                   TextFormField(
                     controller: Email,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
