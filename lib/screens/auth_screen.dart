@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -13,14 +14,15 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _auth = FirebaseAuth.instance;
 
-  bool _isLoading   = false;
+  bool _isLoading = false;
+
 
   void _submitAuthForm(String email, String username, String password,
-      bool isLogin, File userImage ,  BuildContext ctx) async {
+      bool isLogin, File userImage, BuildContext ctx) async {
     UserCredential authResult;
     try {
       setState(() {
-        _isLoading  = true;
+        _isLoading = true;
       });
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
@@ -28,11 +30,23 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-        print(userImage.path);
-        await  FirebaseFirestore.instance
-            .collection('users')
-            .doc(authResult.user.uid)
-            .set({'UserName': username, 'email': email});
+
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(authResult.user.uid + '.jpg');
+
+        // String  url ;
+
+        UploadTask putFileResponse = ref.putFile(userImage);
+        putFileResponse.whenComplete(() async {
+          final url = await ref.getDownloadURL();
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(authResult.user.uid)
+              .set({'UserName': username, 'email': email, 'userImage': url});
+          print(url);
+        });
       }
     } on FirebaseAuthException catch (err) {
       var message = 'An Error Occured . Please check your Credentials';
@@ -58,7 +72,7 @@ class _AuthScreenState extends State<AuthScreen> {
       );
     } catch (err) {
       setState(() {
-        _isLoading  = false;
+        _isLoading = false;
       });
       print(err);
     }
@@ -68,6 +82,6 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: AuthForm(_submitAuthForm  ,_isLoading));
+        body: AuthForm(_submitAuthForm, _isLoading));
   }
 }
