@@ -32,7 +32,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           Icons.exit_to_app,
                           color: Theme.of(context).primaryColor,
                         ),
-                        SizedBox(width: 8,),
+                        SizedBox(
+                          width: 8,
+                        ),
                         Text('Logout')
                       ],
                     ),
@@ -48,21 +50,12 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-        body:  Container(
+        body: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Expanded(child: Messages()) ,
-            NewMessage()],
+            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Expanded(child: Messages()), NewMessage()],
           ),
         ),
-        /*floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            FirebaseFirestore.instance
-                .collection('chats/1toXWvHUAnaj3V2bEOYX/messages')
-                .add({'text': 'This message was added by Button'});
-          },
-        ),*/
       ),
     );
   }

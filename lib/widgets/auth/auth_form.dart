@@ -1,21 +1,24 @@
 import 'package:chatapp/helpers/validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 
 class AuthForm extends StatefulWidget {
-  AuthForm(this.submitFn  , this._isLoading);
+  AuthForm(this.submitFn, this._isLoading);
 
-  final bool _isLoading ;
+  final bool _isLoading;
 
-  final void Function(
-      String email, String username, String password, bool isLogin , BuildContext ctx ) submitFn;
+  final void Function(String email, String username, String password,
+      bool isLogin, BuildContext ctx) submitFn;
 
   @override
   _AuthFormState createState() => _AuthFormState();
 }
 
 class _AuthFormState extends State<AuthForm> {
+  final Email = TextEditingController();
+  final userName = TextEditingController();
+  final password = TextEditingController();
+
   var _isLogin = true;
   String _userEmail = '';
   String _userName = '';
@@ -29,26 +32,26 @@ class _AuthFormState extends State<AuthForm> {
     if (_isValid) {
       //this line triggers the onSaved on every TextFormField
       _formKey.currentState.save();
-      widget.submitFn(_userEmail.trim(), _userName.trim(), _userPassword.trim(), _isLogin , context);
+      widget.submitFn(_userEmail.trim(), _userName.trim(), _userPassword.trim(),
+          _isLogin, context);
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(20),
         child: SingleChildScrollView(
-          padding:const  EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Form(
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextFormField(
+                    controller: Email,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     autofillHints: [AutofillHints.email],
                     key: ValueKey('Email'),
@@ -80,6 +83,7 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                   if (!_isLogin)
                     TextFormField(
+                      controller: userName,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       key: ValueKey('UserName'),
                       validator: Validators.UserNameValidator,
@@ -106,6 +110,7 @@ class _AuthFormState extends State<AuthForm> {
                     height: 10,
                   ),
                   TextFormField(
+                    controller: password,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     key: ValueKey('password'),
                     validator: Validators.passwordValidator,
@@ -119,8 +124,8 @@ class _AuthFormState extends State<AuthForm> {
                     //   return null;
                     /},*/
                     decoration: InputDecoration(
-                      //hintText: 'Password',
-                     // floatingLabelAlignment: FloatingLabelAlignment.start,
+                        //hintText: 'Password',
+                        // floatingLabelAlignment: FloatingLabelAlignment.start,
                         //floatingLabelBehavior: FloatingLabelBehavior.always,
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
@@ -135,23 +140,25 @@ class _AuthFormState extends State<AuthForm> {
                   const SizedBox(
                     height: 12,
                   ),
-                  if(widget._isLoading)CircularProgressIndicator(),
-                  if(!widget._isLoading)
-                  ElevatedButton(
-                      onPressed: _trySubmit,
-                      child: Text(_isLogin ? 'Login' : 'SignUp')),
-                  if(!widget._isLoading)
-                  TextButton(
-                    child: Text(_isLogin
-                        ? 'Create New Account'
-                        : 'I already have an Account'),
-                    onPressed: () {
-                      setState(() {
-                        _isLogin = !_isLogin;
-                        print(_isLogin);
-                      });
-                    },
-                  ),
+                  if (widget._isLoading) CircularProgressIndicator(),
+                  if (!widget._isLoading)
+                    ElevatedButton(
+                        onPressed: _trySubmit,
+                        child: Text(_isLogin ? 'Login' : 'SignUp')),
+                  if (!widget._isLoading)
+                    TextButton(
+                      child: Text(_isLogin
+                          ? 'Create New Account'
+                          : 'I already have an Account'),
+                      onPressed: () {
+                        setState(() {
+                          _isLogin = !_isLogin;
+                          userName.clear();
+                          password.clear();
+                          Email.clear();
+                        });
+                      },
+                    ),
                 ],
               )),
         ),
