@@ -1,6 +1,9 @@
 import 'package:chatapp/helpers/validators.dart';
+import 'dart:io';
+import 'package:chatapp/picker/user_image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AuthForm extends StatefulWidget {
   AuthForm(this.submitFn, this._isLoading);
@@ -18,6 +21,8 @@ class _AuthFormState extends State<AuthForm> {
   final Email = TextEditingController();
   final userName = TextEditingController();
   final password = TextEditingController();
+
+  bool passIsHidden = true;
 
   var _isLogin = true;
   String _userEmail = '';
@@ -50,6 +55,7 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (!_isLogin) UserImagePicker(),
                   TextFormField(
                     controller: Email,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -130,8 +136,14 @@ class _AuthFormState extends State<AuthForm> {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12)),
                         labelText: 'Password',
-                        suffixIcon: const Icon(Icons.password)),
-                    obscureText: true,
+                        suffixIcon: InkWell(
+                            onTap: () {
+                              setState(
+                                () => passIsHidden = !passIsHidden,
+                              );
+                            },
+                            child: const Icon(Icons.password))),
+                    obscureText: passIsHidden,
                     onSaved: (value) {
                       _userPassword = value;
                     },
