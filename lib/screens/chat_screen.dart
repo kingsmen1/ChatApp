@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -10,7 +11,38 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
+/*void initState() {
+  super.initState();
+  final fbm = FirebaseMessaging.instance;
+  fbm.requestPermission();
+  FirebaseMessaging.onMessage.listen((message) {
+    print(message);
+    return;
+  });
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    print(message);
+    return;
+  });
+  fbm.subscribeToTopic('chat');
+}*/
+
 class _ChatScreenState extends State<ChatScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    final fbm = FirebaseMessaging.instance;
+    fbm.requestPermission();
+    FirebaseMessaging.onMessage.listen((message) {
+      print('onMessage  ${message}');
+      return;
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print(message);
+      return;
+    });
+    fbm.subscribeToTopic('chat');
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
