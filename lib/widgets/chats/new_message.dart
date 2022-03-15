@@ -13,6 +13,7 @@ class _NewMessageState extends State<NewMessage> {
 
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
+    print('vivo');
     final user = await FirebaseAuth.instance.currentUser;
     final userData  =await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
     FirebaseFirestore.instance.collection('chat').add({
