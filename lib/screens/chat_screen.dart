@@ -43,6 +43,8 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     fbm.subscribeToTopic('chat');
   }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -51,6 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
           title: Text('ChatApp'),
           actions: [
             DropdownButton(
+              underline: Container(),
               icon: Icon(
                 Icons.more_vert,
                 color: Theme.of(context).primaryIconTheme.color,

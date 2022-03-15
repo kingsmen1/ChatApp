@@ -71,6 +71,8 @@ class _AuthFormState extends State<AuthForm> {
                 children: [
                   if (!_isLogin) UserImagePicker(userImage),
                   TextFormField(
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
                     controller: Email,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     autofillHints: [AutofillHints.email],
@@ -103,6 +105,9 @@ class _AuthFormState extends State<AuthForm> {
                     ),
                   if (!_isLogin)
                     TextFormField(
+                      enableSuggestions: false,
+                      autocorrect: true,
+                      textCapitalization: TextCapitalization.words,
                       controller: userName,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       key: ValueKey('UserName'),

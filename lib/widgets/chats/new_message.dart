@@ -15,13 +15,16 @@ class _NewMessageState extends State<NewMessage> {
     FocusScope.of(context).unfocus();
     print('vivo');
     final user = await FirebaseAuth.instance.currentUser;
-    final userData  =await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final userData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
     FirebaseFirestore.instance.collection('chat').add({
       'text': _enteredMessage,
       "createdAt": Timestamp.now(),
       'userId': user.uid,
-      'username':userData['UserName'],
-      'userImage':userData['userImage'],
+      'username': userData['UserName'],
+      'userImage': userData['userImage'],
     });
     _controller.clear();
   }
@@ -35,6 +38,9 @@ class _NewMessageState extends State<NewMessage> {
         children: [
           Expanded(
               child: TextField(
+                textCapitalization: TextCapitalization.sentences,
+            autocorrect: true,
+            enableSuggestions: true,
             controller: _controller,
             decoration:
                 InputDecoration(labelText: 'Please enter your Message here!'),
